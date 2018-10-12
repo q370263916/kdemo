@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd 
+       http://www.springframework.org/schema/jee 
+      http://www.springframework.org/schema/jee/spring-jee-3.0.xsd 
+      http://www.springframework.org/schema/context 
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+
+    <!-- 定义consumer的参数 -->
+    <bean id="consumerProperties" class="java.util.HashMap">
+        <constructor-arg>
+            <map>
+                <entry key="bootstrap.servers" value="${kafka.bootstrap.servers}"/>
+                <entry key="group.id" value="arriveExpireTask"/>
+                <entry key="enable.auto.commit" value="false"/>
+                <entry key="auto.commit.interval.ms" value="10000"/>
+                <entry key="session.timeout.ms" value="30000"/>
+                <!--自动确认offset的时间间隔  -->
+                <entry key="auto.commit.interval.ms" value="30000"/>
+                <!--消息发送的最长等待时间.需大于session.timeout.ms这个时间 -->
+                <entry key="request.timeout.ms" value="40000"/>
+                <!-- 一次从kafka中poll出来的数据条数 max.poll.records条数据需要在在session.timeout.ms这个时间内处理完 -->
+                <entry key="max.poll.records" value="100"/>
+                <entry key="fetch.min.bytes" value="1"/>
+                <entry key="fetch.wait.max.ms" value="1000"/>
+                <entry key="auto.offset.reset" value="earliest"/>
+                <entry key="key.deserializer" value="org.apache.kafka.common.serialization.StringDeserializer"/>
+                <entry key="value.deserializer" value="org.apache.kafka.common.serialization.StringDeserializer"/>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <!--2、Kafka消费者工厂，DefaultKafkaConsumerFactory-->
+    <bean id="consumerFactory" class="org.springframework.kafka.core.DefaultKafkaConsumerFactory">
+        <constructor-arg>
+            <ref bean="consumerProperties"/>
+        </constructor-arg>
+    </bean>
+
+
+    <!-- 实际执行消息消费的类 -->
+    <bean id="messageListernerConsumerService" class="com.ypwh.cron.msg.util.KafkaConsumerServer"  />
+      
+
+          
+
+    <!-- 消费者容器配置信息 -->
+    <bean id="containerProperties_demo" class="org.springframework.kafka.listener.config.ContainerProperties">
+        <constructor-arg value="demoTopic"/>
+        <property name="messageListener" ref="messageListernerConsumerService"/>
+        <property name="ackMode" value="MANUAL_IMMEDIATE"/>
+    </bean>
+    <bean id="containerProperties_aBon" class="org.springframework.kafka.listener.config.ContainerProperties">
+        <constructor-arg value="arriveBonTopicNew"/>
+        <property name="messageListener" ref="messageListernerConsumerService"/>
+        <property name="ackMode" value="MANUAL_IMMEDIATE"/>
+    </bean>
+
+    <bean id="containerProperties_eBon" class="org.springframework.kafka.listener.config.ContainerProperties">
+        <constructor-arg value="exppBonTopicNew"/>
+        <property name="messageListener" ref="messageListernerConsumerService"/>
+        <property name="ackMode" value="MANUAL_IMMEDIATE"/>
+
+    </bean>
+
+    <bean id="containerProperties_aRed" class="org.springframework.kafka.listener.config.ContainerProperties">
+        <constructor-arg value="arriveRedTopicNew"/>
+        <property name="messageListener" ref="messageListernerConsumerService"/>
+        <property name="ackMode" value="MANUAL_IMMEDIATE"/>
+
+    </bean>
+
+    <bean id="containerProperties_eRed" class="org.springframework.kafka.listener.config.ContainerProperties">
+        <constructor-arg value="exppRedTopicNew"/>
+        <property name="messageListener" ref="messageListernerConsumerService"/>
+        <property name="ackMode" value="MANUAL_IMMEDIATE"/>
+
+    </bean>
+    
+    
+    
+    
+    
+    <bean id="containerProperties_award" class="org.springframework.kafka.listener.config.ContainerProperties">
+        <constructor-arg value="awardTopic"/>
+        <property name="messageListener" ref="messageListernerConsumerService"/>
+        <property name="ackMode" value="MANUAL_IMMEDIATE"/>
+
+    </bean>
+    <bean id="containerProperties_getAward" class="org.springframework.kafka.listener.config.ContainerProperties">
+        <constructor-arg value="getAwardTopic"/>
+        <property name="messageListener" ref="messageListernerConsumerService"/>
+        <property name="ackMode" value="MANUAL_IMMEDIATE"/>
+
+    </bean>
+    <bean id="containerProperties_noRegister" class="org.springframework.kafka.listener.config.ContainerProperties">
+        <constructor-arg value="noRegisterTopic"/>
+        <property name="messageListener" ref="messageListernerConsumerService"/>
+        <property name="ackMode" value="MANUAL_IMMEDIATE"/>
+
+    </bean>
+    <bean id="containerProperties_getCodeRed" class="org.springframework.kafka.listener.config.ContainerProperties">
+        <constructor-arg value="getCodeRedTopic"/>
+        <property name="messageListener" ref="messageListernerConsumerService"/>
+        <property name="ackMode" value="MANUAL_IMMEDIATE"/>
+
+    </bean>
+    <bean id="containerProperties_getFri" class="org.springframework.kafka.listener.config.ContainerProperties">
+        <constructor-arg value="getFriTopic"/>
+        <property name="messageListener" ref="messageListernerConsumerService"/>
+        <property name="ackMode" value="MANUAL_IMMEDIATE"/>
+
+    </bean>
+    <bean id="containerProperties_getRegCode" class="org.springframework.kafka.listener.config.ContainerProperties">
+        <constructor-arg value="getRegCodeTopic"/>
+        <property name="messageListener" ref="messageListernerConsumerService"/>
+        <property name="ackMode" value="MANUAL_IMMEDIATE"/>
+
+    </bean>
+
+    <bean id="containerProperties_baifendian" class="org.springframework.kafka.listener.config.ContainerProperties">
+        <constructor-arg value="baifendianTopic"/>
+        <property name="messageListener" ref="messageListernerConsumerService"/>
+        <property name="ackMode" value="MANUAL_IMMEDIATE"/>
+
+    </bean>
+    <bean id="containerProperties_user" class="org.springframework.kafka.listener.config.ContainerProperties">
+        <constructor-arg value="userTopic"/>
+        <property name="messageListener" ref="messageListernerConsumerService"/>
+        <property name="ackMode" value="MANUAL_IMMEDIATE"/>
+
+    </bean>
+
+
+
+
+
+
+
+
+
+    <!-- 创建messageListenerContainer bean，使用的时候，只需要注入这个bean -->
+    <bean id="messageListenerContainer_demo" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_demo"/>
+    </bean>
+
+
+
+    <bean id="messageListenerContainer_aBon" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_aBon"/>
+    </bean>
+    
+    <bean id="messageListenerContainer_aBon1" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_aBon"/>
+    </bean>
+    
+    <bean id="messageListenerContainer_aBon2" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_aBon"/>
+    </bean>
+    
+    
+    
+    
+    <bean id="messageListenerContainer_eBon" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_eBon"/>
+    </bean>
+    
+    
+      <bean id="messageListenerContainer_eBon1" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_eBon"/>
+    </bean>
+    
+    
+    
+      <bean id="messageListenerContainer_eBon2" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_eBon"/>
+    </bean>
+    
+    
+    
+    
+    
+    <bean id="messageListenerContainer_aRed" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_aRed"/>
+    </bean>
+    
+    
+     <bean id="messageListenerContainer_aRed1" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_aRed"/>
+    </bean>
+    
+    
+    
+     <bean id="messageListenerContainer_aRed2" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_aRed"/>
+    </bean>
+    
+    
+    
+    
+    <bean id="messageListenerContainer_eRed" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_eRed"/>
+    </bean>
+    
+     <bean id="messageListenerContainer_eRed1" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_eRed"/>
+    </bean>
+    
+     <bean id="messageListenerContainer_eRed2" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_eRed"/>
+    </bean>
+    
+    
+    
+    
+    
+
+    <bean id="messageListenerContainer_award" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_award"/>
+    </bean>
+    
+    
+    <bean id="messageListenerContainer_award1" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_award"/>
+    </bean>
+    
+    <bean id="messageListenerContainer_award2" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_award"/>
+    </bean>
+    
+    
+    
+    <bean id="messageListenerContainer_getAward" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_getAward"/>
+    </bean>
+    
+    
+    <bean id="messageListenerContainer_getAward1" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_getAward"/>
+    </bean>
+    
+    <bean id="messageListenerContainer_getAward2" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_getAward"/>
+    </bean>
+    
+    
+    <bean id="messageListenerContainer_noRegister" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_noRegister"/>
+    </bean>
+    
+     <bean id="messageListenerContainer_noRegister1" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_noRegister"/>
+    </bean>
+    
+    
+     <bean id="messageListenerContainer_noRegister2" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_noRegister"/>
+    </bean>
+    
+    
+    
+    <bean id="messageListenerContainer_getCodeRed" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_getCodeRed"/>
+    </bean>
+    
+    
+     <bean id="messageListenerContainer_getCodeRed1" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_getCodeRed"/>
+    </bean>
+    
+     <bean id="messageListenerContainer_getCodeRed2" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_getCodeRed"/>
+    </bean>
+    
+    <bean id="messageListenerContainer_getRegCode" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_getRegCode"/>
+    </bean>
+    
+    <bean id="messageListenerContainer_getRegCode1" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_getRegCode"/>
+    </bean>
+    
+    
+    <bean id="messageListenerContainer_getRegCode2" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_getRegCode"/>
+    </bean>
+    
+    
+    
+    
+    <bean id="messageListenerContainer_getFri" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_getFri"/>
+    </bean>
+    
+    
+     <bean id="messageListenerContainer_getFri1" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_getFri"/>
+    </bean>
+
+
+ 	<bean id="messageListenerContainer_getFri2" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_getFri"/>
+    </bean>
+
+    <bean id="messageListenerContainer_baifendian" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_baifendian"/>
+    </bean>
+    <bean id="messageListenerContainer_user" class="org.springframework.kafka.listener.KafkaMessageListenerContainer"
+          init-method="doStart">
+        <constructor-arg ref="consumerFactory"/>
+        <constructor-arg ref="containerProperties_user"/>
+    </bean>
+
+</beans>

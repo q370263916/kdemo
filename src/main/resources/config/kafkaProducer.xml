@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <beans xmlns="http://www.springframework.org/schema/beans"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+      xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd">
+  
+      <!-- 定义producer的参数 -->
+     <bean id="producerProperties" class="java.util.HashMap">
+         <constructor-arg>
+             <map>
+                 <entry key="bootstrap.servers" value="${kafka.bootstrap.servers}" />
+                 <entry key="group.id" value="arriveExpireTask" />
+                 <entry key="retries" value="1" />
+                 <entry key="batch.size" value="16384" />
+                 <entry key="linger.ms" value="1" />
+                 <entry key="buffer.memory" value="33554432" />
+               <!--   <entry key="acks" value="all" /> -->
+                 <!--自动确认offset的时间间隔  -->
+                 <entry key="auto.commit.interval.ms" value="60000"/>
+                 <!--消息发送的最长等待时间.需大于session.timeout.ms这个时间 -->
+                 <entry key="request.timeout.ms" value="40000"/>
+                 <!-- 一次从kafka中poll出来的数据条数 max.poll.records条数据需要在在session.timeout.ms这个时间内处理完 -->
+                 <entry key="max.poll.records" value="100"/>
+                 <entry key="auto.offset.reset" value="latest"/>
+                 <entry key="max.poll.records" value="100"/>
+<!--
+                 <entry key="producer.typ" value="async"/>
+-->
+                 <entry key="request.required.acks" value="1"/>
+                 <entry key="key.serializer"
+                 value="org.apache.kafka.common.serialization.StringSerializer" />
+                 <entry key="value.serializer"
+                 value="org.apache.kafka.common.serialization.StringSerializer" />
+             </map>
+         </constructor-arg>
+     </bean>
+ 
+     <!-- 创建kafkatemplate需要使用的producerfactory bean -->
+     <bean id="producerFactory"
+         class="org.springframework.kafka.core.DefaultKafkaProducerFactory">
+         <constructor-arg>
+             <ref bean="producerProperties" />
+         </constructor-arg>
+     </bean>
+ 
+     <!-- 创建kafkatemplate bean，使用的时候，只需要注入这个bean，即可使用template的send消息方法 -->
+     <bean id="kafkaTemplate" class="org.springframework.kafka.core.KafkaTemplate">
+         <constructor-arg ref="producerFactory" />
+         <constructor-arg name="autoFlush" value="true" />
+         <property name="defaultTopic" value="defaultTopic" />
+         <property name="producerListener" ref="producerListener"/>
+     </bean>
+     
+     <bean id="kafkaProductServer" class="com.ypwh.cron.msg.util.KafkaProductServer" />
+<!--
+       <property name="kafkaTemplate" ref="kafkaTemplate"/>
+-->
+
+     <bean id="producerListener" class="com.ypwh.cron.msg.util.KafkaProducerListener" />
+</beans>

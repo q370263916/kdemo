@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<dubbo:application name="rest-api-consumer" owner="rest-api-consumer" organization="com.ypwh" />
+	<dubbo:registry address="zookeeper://192.168.1.182:2181"/>
+	<dubbo:reference id="smsService" interface="com.ypwh.sms.service.api.SmsService" check="false" />
+	<dubbo:reference id="pushMessageService" interface="com.ypwh.push.api.PushMessageService" check="false" />
+	<dubbo:reference id="appSystemMessageService" interface="com.ypwh.user.service.api.SystemMessageService"  check="false"/>
+	<dubbo:reference id="goodsService" interface="com.ypwh.goods.service.api.GoodsService" check="false" />
+
+</beans>

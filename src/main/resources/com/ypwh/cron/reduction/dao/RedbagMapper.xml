@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ypwh.cron.reduction.dao.RedbagMapper" >
+
+ 
+
+  <select id="getMaxId" resultType="long">
+    SELECT max(id)  from t_user_redbag  where get_time  <![CDATA[ <= ]]> #{getTime}   
+  </select>
+  
+  <select id="getMinId"  resultType="long">
+    SELECT min(id)  from t_user_redbag  where get_time <![CDATA[ > ]]>  #{getTime}   
+  </select>
+
+   <resultMap id="UserRedBagResultMap" type="com.ypwh.cron.reduction.entity.UserRedBagEntity" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="redbag_id" property="redbagId" jdbcType="BIGINT" />
+    <result column="redbag_name" property="redbagName" jdbcType="VARCHAR" />
+    <result column="money" property="money" jdbcType="DECIMAL" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+   <result column="get_platform" property="getPlatform" jdbcType="TINYINT" />
+    
+    <result column="use_time" property="useTime" jdbcType="TIMESTAMP" />
+    <result column="get_time" property="getTime" jdbcType="TIMESTAMP" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+
+  <select id="listByStartId" resultMap="UserRedBagResultMap">
+  	   SELECT id,get_time,user_id,state,start_time,end_time,get_platform from t_user_redbag where  id>#{startId} order by id asc limit #{rows}
+
+  </select>
+</mapper>

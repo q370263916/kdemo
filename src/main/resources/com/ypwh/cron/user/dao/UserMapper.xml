@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ypwh.cron.user.dao.UserMapper" >
+
+  <resultMap id="UserDetailResultMap" type="com.ypwh.cron.user.entity.UserDetailEntity" >
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
+    <result column="birth" property="birth" jdbcType="DATE" />
+    <result column="sex" property="sex" jdbcType="BIT" />
+    <result column="head_img" property="headImg" jdbcType="VARCHAR" />
+    <result column="device_token" property="deviceToken" jdbcType="VARCHAR" />
+    <result column="device_type" property="deviceType" jdbcType="BIT" />
+    <result column="wx_open_id" property="wxOpenId" jdbcType="VARCHAR" />
+    <result column="jpush_id" property="jpushId" jdbcType="VARCHAR" />
+    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+    <result column="easemob_id" property="easemobId" jdbcType="VARCHAR" />
+    <result column="easemob_pwd" property="easemobPwd" jdbcType="VARCHAR" />
+    <result column="credit_score" property="creditScore" jdbcType="INTEGER" />
+    <result column="signature" property="signature" jdbcType="VARCHAR" />
+    <result column="is_merchant" property="isMerchant" jdbcType="INTEGER" />
+    <result column="titles" property="titles" jdbcType="VARCHAR" />
+    <result column="user_group" property="group" jdbcType="INTEGER" />
+    <result column="zone_pic" property="zoneBackground" jdbcType="VARCHAR" />
+    <result column="trade_rate" property="tradeRate" jdbcType="FLOAT" />
+    <result column="credit_level" property="creditLevel" jdbcType="INTEGER" />
+    <result column="identity" property="identity" jdbcType="INTEGER"/>
+    <result column="work_time" property="workTime" jdbcType="VARCHAR"/>
+    <result column="total_point" property="totalPoint" jdbcType="INTEGER"/>
+    <result column="buyer_point" property="buyerPoint" jdbcType="INTEGER"/>
+
+    <result column="merchant_goods_quality_point" property="merchantGoodsQualityPoint" jdbcType="INTEGER"/>
+    <result column="merchant_goods_convention_point" property="merchantGoodsConventionPoint" jdbcType="INTEGER"/>
+    <result column="merchant_goods_faith_point" property="merchantGoodsFaithPoint" jdbcType="INTEGER"/>
+    <result column="merchant_goods_social_point" property="merchantGoodsSocialPoint" jdbcType="INTEGER"/>
+    <result column="merchant_goods_account_point" property="merchantGoodsAccountPoint" jdbcType="INTEGER"/>
+    <result column="zhima_score" property="zhimaScore" jdbcType="INTEGER"/>
+    <result column="license" property="license" jdbcType="VARCHAR"/>
+
+  </resultMap>
+
+  <select id="listUserDetail" resultMap="UserDetailResultMap">
+    SELECT user_id,nick_name,jpush_id,mobile  from t_user_detail
+     where user_id >#{userId}
+     order by user_id asc
+     limit #{rows}
+   
+  </select>
+
+  <insert id="recordUserLoginTime" parameterType="com.ypwh.cron.user.entity.UserLoginLogEntity"
+          keyProperty="id" useGeneratedKeys="true">
+    insert into t_login_log(
+    user_id,
+    <if test="source!=null">
+      source,
+    </if>
+    <if test="loginType>0">
+      login_type,
+    </if>
+    login_time
+    )value(
+    #{userId},
+    <if test="source!=null">
+      #{source},
+    </if>
+    <if test="loginType>0">
+      #{loginType},
+    </if>
+    now()
+    )
+  </insert>
+
+  <update id="updateLastLogin">
+    update t_user set last_login=sysdate()
+    <if test="onlyRegister>0">
+      ,only_register=#{onlyRegister}
+    </if>
+    where user_id=#{userId}
+  </update>
+
+  <select id="findById" resultType="com.ypwh.cron.msg.bean.UserEntity">
+    select user_id as userId,last_login as lastLogin,account from t_user
+    where user_id=#{userId}
+  </select>
+
+</mapper>

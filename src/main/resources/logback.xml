@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<configuration debug="false" scan="true">
+	<property name="LOG_PATH" value="../logs" />
+
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%5p] [%X{host}] [%X{uri}] %C.%M - %m%n</pattern>
+		</encoder>
+	</appender>
+	<appender name="file-log"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_PATH}/ypwh-cron.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_PATH}/ypwh-cron-%d{yyyyMMdd}.log</fileNamePattern>
+			<maxHistory>5</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} [%5p] [%X{host}] [%X{uri}] %C{0}.%M - %m%n</pattern>
+		</encoder>
+	</appender>
+	<logger name="com.kafka.ighack.Consumer"  level="debug" additivity="false" >
+		<appender-ref ref="FILE"/>
+	</logger>
+	<logger name="org.apache.kafka" level="OFF"/>
+	<root level="DEBUG">
+		<appender-ref ref="stdout" />
+		<appender-ref ref="file-log" />
+	</root>
+</configuration>

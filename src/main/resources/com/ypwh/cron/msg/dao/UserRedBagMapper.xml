@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ypwh.cron.msg.dao.UserRedBagMapper" >
+  <resultMap id="UserRedBagResultMap" type="com.ypwh.cron.msg.bean.UserRedBagEntity" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="redbag_id" property="redbagId" jdbcType="BIGINT" />
+    <result column="redbag_name" property="redbagName" jdbcType="VARCHAR" />
+    <result column="money" property="money" jdbcType="DECIMAL" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="use_time" property="useTime" jdbcType="TIMESTAMP" />
+    <result column="get_time" property="getTime" jdbcType="TIMESTAMP" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+
+  <resultMap id="BaseResultMap" type="com.ypwh.cron.msg.bean.UserEntity" >
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="account" property="account" jdbcType="VARCHAR" />
+    <result column="account_type" property="accountType" jdbcType="INTEGER" />
+    <result column="register_time" property="registerTime" jdbcType="TIMESTAMP" />
+    <result column="last_login" property="lastLogin" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="is_merchant" property="isMerchant" jdbcType="TINYINT" />
+    <result column="only_register" property="onlyRegister" jdbcType="TINYINT" />
+    <result column="forbid_time" property="forbidTime" jdbcType="TIMESTAMP"/>
+    <result column="user_role" property="userRole" jdbcType="INTEGER"/>
+    <result column="auth_role" property="authRole" jdbcType="INTEGER"/>
+    <result column="auth_flag" property="authFlag" jdbcType="INTEGER"/>
+    <result column="user_flag" property="userFlag" jdbcType="INTEGER"/>
+  </resultMap>
+
+  <resultMap id="UserDetailResultMap" type="com.ypwh.cron.msg.bean.UserDetailEntity" >
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
+    <result column="birth" property="birth" jdbcType="DATE" />
+    <result column="sex" property="sex" jdbcType="BIT" />
+    <result column="head_img" property="headImg" jdbcType="VARCHAR" />
+    <result column="device_token" property="deviceToken" jdbcType="VARCHAR" />
+    <result column="device_type" property="deviceType" jdbcType="BIT" />
+    <result column="wx_open_id" property="wxOpenId" jdbcType="VARCHAR" />
+    <result column="jpush_id" property="jpushId" jdbcType="VARCHAR" />
+    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+    <result column="easemob_id" property="easemobId" jdbcType="VARCHAR" />
+    <result column="easemob_pwd" property="easemobPwd" jdbcType="VARCHAR" />
+    <result column="credit_score" property="creditScore" jdbcType="INTEGER" />
+    <result column="signature" property="signature" jdbcType="VARCHAR" />
+    <result column="is_merchant" property="isMerchant" jdbcType="INTEGER" />
+    <result column="titles" property="titles" jdbcType="VARCHAR" />
+    <result column="user_group" property="group" jdbcType="INTEGER" />
+    <result column="zone_pic" property="zoneBackground" jdbcType="VARCHAR" />
+    <result column="trade_rate" property="tradeRate" jdbcType="FLOAT" />
+    <result column="credit_level" property="creditLevel" jdbcType="INTEGER" />
+    <result column="identity" property="identity" jdbcType="INTEGER"/>
+    <result column="work_time" property="workTime" jdbcType="VARCHAR"/>
+    <result column="total_point" property="totalPoint" jdbcType="INTEGER"/>
+    <result column="buyer_point" property="buyerPoint" jdbcType="INTEGER"/>
+
+    <result column="merchant_goods_quality_point" property="merchantGoodsQualityPoint" jdbcType="INTEGER"/>
+    <result column="merchant_goods_convention_point" property="merchantGoodsConventionPoint" jdbcType="INTEGER"/>
+    <result column="merchant_goods_faith_point" property="merchantGoodsFaithPoint" jdbcType="INTEGER"/>
+    <result column="merchant_goods_social_point" property="merchantGoodsSocialPoint" jdbcType="INTEGER"/>
+    <result column="merchant_goods_account_point" property="merchantGoodsAccountPoint" jdbcType="INTEGER"/>
+    <result column="zhima_score" property="zhimaScore" jdbcType="INTEGER"/>
+    <result column="license" property="license" jdbcType="VARCHAR"/>
+
+  </resultMap>
+
+  <select id="listUserRedBag" resultMap="UserRedBagResultMap">
+  SELECT id,user_id,get_time from t_user_redbag where   id>#{id}  and get_time>=#{startTime} and get_time &lt;=#{endTime} AND end_time>now()  and state=0 GROUP BY user_id
+  order by id LIMIT 1000
+  </select>
+
+  <select id="listUserRedBagGreaterDay" resultMap="UserRedBagResultMap">
+    SELECT l.id,l.user_id,l.get_time from t_user_redbag l where  l.id>#{id} and   l.end_time>#{startTime}  and l.end_time &lt;=#{endTime} and l.end_time > DATE_ADD(l.start_time,INTERVAL  3 DAY) and l.state=0
+       GROUP BY l.user_id  order by l.id LIMIT 1000
+  </select>
+
+  <select id="listUserRedBagLessDay" resultMap="UserRedBagResultMap">
+    SELECT l.id,l.user_id,l.get_time from t_user_redbag l where  l.id>#{id}  and  l.end_time>#{startTime} and  l.end_time &lt;=#{endTime}  and
+    l.end_time &lt; DATE_ADD(l.start_time,INTERVAL  3 DAY)  and l.state=0
+    GROUP BY l.user_id order by l.id LIMIT 1000
+  </select>
+
+  <select id="listUser" resultMap="BaseResultMap">
+    SELECT * from t_user
+    where user_id in
+    <foreach collection="userIds" close=")" open="(" item="id" separator=",">
+      #{id}
+    </foreach>
+  </select>
+
+  <select id="listUserDetail" resultMap="UserDetailResultMap">
+    SELECT * from t_user_detail
+    where user_id in
+    <foreach collection="userIds" close=")" open="(" item="id" separator=",">
+      #{id}
+    </foreach>
+    and jpush_id is not null
+  </select>
+
+</mapper>

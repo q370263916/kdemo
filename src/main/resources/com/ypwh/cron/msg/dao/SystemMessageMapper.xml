@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ypwh.cron.msg.dao.SystemMessageMapper" >
+  <sql id="table_message">t_sys_message</sql>
+  
+  <sql id="wallet_fields">
+  	user_id,
+	title,
+	content,
+	msg_type,
+	create_time,
+	link_url,
+	thumbnail,
+	biz_id,
+	biz_type,
+	sender_id
+  </sql>
+  
+  
+  <insert id="insert" parameterType="com.ypwh.cron.msg.bean.SystemMessageEntity" useGeneratedKeys="true" keyProperty="messageId">
+    insert into <include refid="table_message"/> ( <include refid="wallet_fields"/>
+      )
+    values (#{userId}, #{title}, 
+      #{content},#{msgType},#{createTime},#{linkUrl},#{thumbnail},#{bizId},#{bizType},#{senderId}
+      )
+  </insert>
+  
+
+</mapper>

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="cron:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="cron.war">
+      <element id="artifact" artifact-name="cron:war exploded" />
+    </root>
+  </artifact>
+</component>

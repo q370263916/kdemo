@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ypwh.cron.goods.dao.GoodsMapper" >
+
+<resultMap id="resultMap" type="com.ypwh.cron.goods.model.GoodsEntity" >
+	    <result column="id" property="id" jdbcType="BIGINT" />
+	    <result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+	    <result column="goods_no" property="goodsNo" jdbcType="VARCHAR" />
+	    <result column="goods_brief" property="goodsBrief" jdbcType="VARCHAR" />
+	    <result column="goods_state" property="goodsState" jdbcType="INTEGER" />
+	    <result column="cate_id" property="cateId" jdbcType="INTEGER" />
+	    <result column="sub_cate_id" property="subCateId" jdbcType="INTEGER" />
+	    <result column="owner_id" property="ownerId" jdbcType="BIGINT" />
+	    <result column="sale_price" property="salePrice" jdbcType="DECIMAL" />
+	    <result column="brand_id" property="brandId" jdbcType="INTEGER" />
+	    <result column="glove_id" property="gloveId" jdbcType="BIGINT" />
+	    <result column="purchase_price" property="purchasePrice" jdbcType="DECIMAL" />
+	    <result column="usage_state_id" property="usageStateId" jdbcType="INTEGER" />
+	    <result column="goods_thumb" property="goodsThumb" jdbcType="VARCHAR" />
+	    <result column="biz_type" property="bizType" jdbcType="INTEGER" />
+	    <result column="pbiz_type" property="pbizType" jdbcType="INTEGER" />
+	    <result column="brand_series_id" property="brandSeriesId" jdbcType="INTEGER" />
+	    <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP" />
+	    <result column="brush_time" property="brushTime" jdbcType="TIMESTAMP" />
+	    <result column="favor_num" property="favorNum" jdbcType="INTEGER" />
+	    <result column="browse_num" property="browseNum" jdbcType="INTEGER" />
+	    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+	    <result column="goods_lable" property="labelIds" jdbcType="VARCHAR" />
+	    <result column="sex" property="sex" jdbcType="INTEGER" />
+	    <result column="can_bargain" property="canBargain" jdbcType="INTEGER" />
+	    <result column="cash_on_delivery" property="cashOnDelivery" jdbcType="INTEGER"/>
+	    <result column="price_current" property="priceCurrent" jdbcType="INTEGER" />
+	    <result column="activity_ids" property="activityIds" jdbcType="VARCHAR" />
+	    <result column="activity_price" property="activityPrice" jdbcType="DECIMAL" />
+	    <result column="bar_code" property="barCode" jdbcType="VARCHAR" />
+	    <result column="postage_type" property="postageType" jdbcType="INTEGER" />
+	    <result column="express_fee" property="expressFee" jdbcType="DECIMAL" />
+		<result column="express_type" property="expressType" jdbcType="INTEGER" />
+		<result column="stock_remain" property="stockRemain" jdbcType="INTEGER" />
+		<result column="stock_num" property="stockNum" jdbcType="INTEGER" />
+		<result column="model_serial" property="modelSerial" jdbcType="VARCHAR" />
+		<result column="supply_price" property="supplyPrice" jdbcType="DECIMAL"/>
+        <result column="goods_progress" property="goodsProgress" jdbcType="INTEGER"/>
+        <result column="source_area" property="sourceArea" jdbcType="VARCHAR"/>
+        <result column="is_new" property="isNew" jdbcType="INTEGER" />
+        <result column="lease_deposit" property="leaseDeposit" jdbcType="DECIMAL" />
+	</resultMap>
+	
+	<sql id="selectSql">
+		 SELECT id,goods_name goodsName,goods_no goodsNo, goods_brief goodsBrief,
+		        goods_state goodsState,cate_id cateId,
+		        sub_cate_id subCateId,owner_id ownerId,sale_price salePrice,brand_id brandId,
+		        glove_id gloveId,purchase_price purchasePrice,usage_state_id usageStateId,
+		        goods_thumb goodsThumb,biz_type bizType,pbiz_type pbizType,
+		        brand_series_id  brandSeriesId,publish_time publishTime,brush_time brushTime
+		        ,favor_num favorNum ,browse_num browseNum,create_time createTime,remarks remarks,goods_lable labelIds,
+		        sex sex,can_bargain  canBargain,cash_on_delivery cashOnDelivery,price_current priceCurrent,order_app_state orderAppState,
+		        manual_score manualScore,fixed_score fixedScore,dynamic_score  dynamicScore,commonweal_rate commonwealRate,
+		        activity_ids activityIds,activity_price activityPrice,bar_code barCode,
+		        postage_type postageType,
+			    express_fee expressFee,
+			    express_type expressType,
+			    trade_rate tradeRate,
+			    source_id sourceId,
+			    cash_on_delivery cashOnDelivery,
+			    stock_remain stockRemain,
+			    model_serial modelSerial,
+			    stock_num stockNum,
+			    supply_price supplyPrice,
+			    is_hidden isHidden,
+			    commision_id commisionId,
+			    self_def_brand selfDefBrand,
+			    source_area sourceArea,
+			    is_new isNew,
+	            lease_deposit leaseDeposit,
+	            first_price firstPrice,newer_price_enabled newerPriceEnabled,sale_seven_price saleSevenPrice, sale_half_month_price saleHalfMonthPrice, sale_month_price saleMonthPrice
+		   FROM t_goods 
+	 </sql>
+	
+	<update id="updateGoodsBrowseNum">
+	 	update t_goods set browse_num = case id
+	 	<foreach collection ="list" item="item" index= "index">
+	 			when #{item.id} then ${item.browseNum} + IFNULL(browse_num, 0)
+	 	</foreach>
+	 	end
+	 	where id in 
+	 	    <foreach collection="list" open="(" close=")" separator="," item="item">
+				#{item.id}
+			</foreach> 
+	</update>
+	
+	<select id="selectGoodsById"  resultType="com.ypwh.cron.goods.model.GoodsEntity">
+           <include refid="selectSql"></include>
+            where id=#{id} 
+     </select>
+     
+     <select id="selectGoodsByIds"  resultType="com.ypwh.cron.goods.model.GoodsEntity">
+           <include refid="selectSql"></include>
+            where id in (${ids})
+     </select>
+     
+    <insert id="insertStatGoodsDetail" parameterType="java.util.List">
+	    insert into t_stat_goods_detail (date, site, goods_id, pv, uv, create_time)
+	    values 
+	     <foreach collection ="list" item="item" index= "index" separator =",">
+		    (#{item.date}, #{item.site}, #{item.goodsId}, #{item.pv}, #{item.uv}, #{item.createTime})
+	     </foreach>
+	     on duplicate key update pv = values(pv),uv = values(uv)
+ 	</insert>
+	
+</mapper>

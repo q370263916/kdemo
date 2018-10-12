@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ypwh.cron.reduction.dao.BonusMapper" >
+
+  <select id="getMaxId"  resultType="long">
+    SELECT max(id)  from t_user_bonus  where get_time  <![CDATA[ <= ]]> #{getTime}   
+  </select>
+  
+  <select id="getMinId"  resultType="long">
+    SELECT min(id)  from t_user_bonus where get_time <![CDATA[ > ]]>  #{getTime}   
+  </select>
+
+  <resultMap id="BaseResultMap" type="com.ypwh.cron.reduction.entity.UserBonusEntity">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="user_name" property="userName" jdbcType="BIGINT" />
+		<result column="bonus_type_id" property="bonusTypeId" jdbcType="BIGINT" />
+		<result column="state" property="state" jdbcType="INTEGER" />
+		<result column="get_time" property="getTime" jdbcType="TIMESTAMP" />
+		<result column="use_time" property="useTime" jdbcType="VARCHAR" />
+		<result column="head_img" property="headImg" jdbcType="VARCHAR" />
+		<result column="order_id" property="orderId" jdbcType="BIGINT" />
+		<result column="get_platform" property="getPlatform" jdbcType="TINYINT" />
+		<result column="get_channel" property="getChannel" jdbcType="VARCHAR" />
+		<result column="bonus_no" property="bonusNo" jdbcType="VARCHAR" />
+		<result column="bonus_code" property="bonusCode" jdbcType="VARCHAR" />
+		<result column="bonus_money" property="bonusMoney" jdbcType="DECIMAL" />
+		<result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+		<result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+		<result column="bonus_name" property="bonusName" jdbcType="VARCHAR" />
+		<result column="bonus_type_name" property="bonusTypeName" jdbcType="VARCHAR" />
+		<result column="bonus_type_desc" property="bonusTypeDesc" jdbcType="VARCHAR" />
+		<result column="cate_id" property="cateId" jdbcType="VARCHAR" />
+		<result column="sub_cate_id" property="subCateId" jdbcType="VARCHAR" />
+		<result column="pbiz_type" property="pbizType" jdbcType="INTEGER" />
+		<result column="supported_goods" property="supportedGoods" jdbcType="VARCHAR" />
+		<result column="coupon_type" property="couponType" jdbcType="TINYINT" />
+		<result column="min_goods_amount" property="minGoodsAmount" jdbcType="DECIMAL" />
+		<result column="activity_ids" property="activityIds"  jdbcType="VARCHAR"/>
+		<result column="brand_id" property="brandId"  jdbcType="VARCHAR"/>
+		<result column="jump_url" property="jumpUrl"  jdbcType="VARCHAR"/>
+		<result column="coupon_mode" property="couponMode" jdbcType="TINYINT"/>
+		<result column="supported_merchants" property="supportedMerchants"  jdbcType="VARCHAR"/>
+		<result column="coupon_mode" property="couponMode"  jdbcType="INTEGER"/>
+		<result column="biz_types" property="bizTypes"  jdbcType="VARCHAR"/>
+		<result column="merchant_id" property="merchantId" jdbcType="BIGINT"/>
+		<result column="bonus_describe" property="bonusDescribe" jdbcType="VARCHAR"/>
+	</resultMap>
+
+
+   <select id="listByStartId" resultMap="BaseResultMap" >
+	   SELECT id,get_time,user_id,state,start_time,end_time,get_platform from t_user_bonus where  id>#{startId} order by id asc limit #{rows}
+  </select>
+  
+
+</mapper>
